@@ -13,9 +13,7 @@ from tests.factories.user_balance import UserBalanceFactory
 
 
 @patch('src.integrations.youkassa.YouKassaClient.withdraw', new_callable=AsyncMock)
-async def test_withdraw_ok(
-    mock_deposit: AsyncMock, client: AsyncClient, session: AsyncSession  # noqa: ARG001
-) -> None:  # noqa: ARG001
+async def test_withdraw_ok(mock_deposit: AsyncMock, client: AsyncClient, session: AsyncSession) -> None:  # noqa: ARG001
     user_balance = await UserBalanceFactory.create()
     req = DepositOrWithdrawReq(
         user_id=user_balance.user_id,
@@ -30,9 +28,7 @@ async def test_withdraw_ok(
 
 
 @patch('src.integrations.youkassa.YouKassaClient.withdraw', new_callable=AsyncMock)
-async def test_withdraw_not_balance(
-    mock_deposit: AsyncMock, client: AsyncClient  # noqa: ARG001
-) -> None:  # noqa: ARG001
+async def test_withdraw_not_balance(mock_deposit: AsyncMock, client: AsyncClient) -> None:  # noqa: ARG001
     req = DepositOrWithdrawReq(
         user_id=uuid4(), amount=Decimal(10.10), transaction_type=TransactionType.WITHDRAW, card_number='string'
     )
@@ -43,7 +39,7 @@ async def test_withdraw_not_balance(
 @patch('src.integrations.youkassa.YouKassaClient.withdraw', new_callable=AsyncMock)
 async def test_withdraw_not_money(
     mock_deposit: AsyncMock, client: AsyncClient, session: AsyncSession  # noqa: ARG001
-) -> None:  # noqa: ARG001
+) -> None:
     user_balance = await UserBalanceFactory.create()
     req = DepositOrWithdrawReq(
         user_id=user_balance.user_id,
