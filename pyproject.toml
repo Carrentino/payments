@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "base"
+name = "payments"
 package-mode = false
 version = "0.1.0"
 
@@ -24,6 +24,7 @@ sqladmin = "^0.18.0"
 sqlalchemy = { extras = ["asyncio", "mypy"], version = "^2.0.0" }
 pytest-env = "^1.1.4"
 fastapi-storages = "^0.3.0"
+yookassa = "^3.5.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -53,7 +54,6 @@ filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::UserWarning"
 ]
-addopts = "-vv -ss --tb=short" #  --alluredir allure-results
 asyncio_mode = "auto"
 env = [
     "AUTH_ENVIRONMENT=pytest",
