@@ -15,4 +15,4 @@ class Transaction(Base):
     transaction_type: Mapped[TransactionType] = mapped_column(Enum(TransactionType))
     status: Mapped[TransactionStatus] = mapped_column(Enum(TransactionStatus), default=TransactionStatus.PENDING)
     payment_redirect: Mapped[str]
-    confirmation_url: Mapped[str]
+    confirmation_url: Mapped[str] = mapped_column(nullable=True)

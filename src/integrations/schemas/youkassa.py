@@ -24,3 +24,18 @@ class CreatePaymentSchema(BaseModel):
     payment_method_data: PaymentMethodData
     confirmation: Confirmation
     description: str | None = None
+
+
+class CardSchema(BaseModel):
+    number: str
+
+
+class PayoutDestinationDataSchema(BaseModel):
+    type: str = 'bank_card'
+    card: CardSchema
+
+
+class PayoutSchema(BaseModel):
+    amount: Amount
+    payout_destination_data: PayoutDestinationDataSchema
+    description: str

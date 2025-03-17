@@ -1,10 +1,19 @@
 from uuid import uuid4
 
 from helpers.clients.http_client import BaseApiClient
-from yookassa import Configuration
+from helpers.errors.api import ValidationError
+from yookassa import Configuration, Payout
 from yookassa import Payment
 
-from src.integrations.schemas.youkassa import Amount, CreatePaymentSchema, Confirmation, PaymentMethodData
+from src.integrations.schemas.youkassa import (
+    Amount,
+    CreatePaymentSchema,
+    Confirmation,
+    PaymentMethodData,
+    PayoutSchema,
+    PayoutDestinationDataSchema,
+    CardSchema,
+)
 from src.settings import get_settings
 from src.web.api.transactions.schemas import DepositOrWithdrawReq
 
@@ -29,3 +38,19 @@ class YouKassaClient(BaseApiClient):
 
         confirmation_url = created_payment.confirmation.confirmation_url
         return confirmation_url
+
+    async def withdraw(self, data: DepositOrWithdrawReq) -> None:
+        idempotence_key = str(uuid4())
+        payout = PayoutSchema(
+            amount=Amount(value=data.amount),
+            payout_destination_data=PayoutDestinationDataSchema(
+                card=CardSchema(
+                    number=data.card_number,
+                )
+            ),
+            description=data.description,
+        )
+        try:
+            Payout.create(payout.model_dump(mode='python'), idempotence_key)
+        except ValueError as e:
+            raise ValidationError(str(e)) from None

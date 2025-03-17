@@ -12,7 +12,8 @@ class DepositOrWithdrawReq(BaseModel):
     transaction_type: TransactionType
     payment_redirect: str | None = None
     description: str | None = None
+    card_number: str | None = None
 
 
 class DepositOrWithdrawResp(BaseModel):
-    confirmation_url: str
+    confirmation_url: str | None = None
