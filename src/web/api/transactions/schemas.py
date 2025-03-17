@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from src.db.enums.transaction import TransactionType
+from src.db.enums.transaction import TransactionType, TransactionStatus
 
 
 class DepositOrWithdrawReq(BaseModel):
@@ -17,3 +17,21 @@ class DepositOrWithdrawReq(BaseModel):
 
 class DepositOrWithdrawResp(BaseModel):
     confirmation_url: str | None = None
+
+
+class TransactionFilters(BaseModel):
+    transaction_type: TransactionType | None = None
+    status: TransactionStatus | None = None
+
+    offset: int = 0
+    limit: int = 30
+
+
+class TransactionSchema(BaseModel):
+    user_id: UUID
+    amount: Decimal
+    transaction_type: TransactionType
+    status: TransactionStatus
+
+    class Config:
+        from_attributes = True
