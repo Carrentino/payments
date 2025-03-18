@@ -1,6 +1,7 @@
 from decimal import Decimal
 from uuid import UUID
 
+from helpers.models.response import PaginatedResponse
 from pydantic import BaseModel
 
 from src.db.enums.transaction import TransactionType, TransactionStatus
@@ -35,3 +36,7 @@ class TransactionSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class TransactionPaginatedResponse(PaginatedResponse):
+    data: list[TransactionSchema]

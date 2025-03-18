@@ -64,7 +64,7 @@ class TransactionService:
         await self.user_balance_repository.update_object(user_balance)
 
     async def get_transactions(self, user_id: UUID, filters: TransactionFilters) -> tuple[list[TransactionSchema], int]:
-        clean_filters = {k: v for k, v in filters.model_dump(mode='python').items() if v is not None}
+        clean_filters = filters.model_dump(mode='python', exclude_none=True)
         transactions, count = await self.transaction_repository.get_paginated_transactions(
             **clean_filters, user_id=user_id
         )
