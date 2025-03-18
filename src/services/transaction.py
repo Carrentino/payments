@@ -1,4 +1,5 @@
 from decimal import Decimal
+from uuid import UUID
 
 from pydantic import ValidationError
 
@@ -10,7 +11,12 @@ from src.repositories.transaction import TransactionRepository
 from src.repositories.user_balance import UserBalanceRepository
 from src.settings import get_settings
 from src.utils import decrypt_data, encrypt_data
-from src.web.api.transactions.schemas import DepositOrWithdrawReq, DepositOrWithdrawResp
+from src.web.api.transactions.schemas import (
+    DepositOrWithdrawReq,
+    DepositOrWithdrawResp,
+    TransactionFilters,
+    TransactionSchema,
+)
 
 
 class TransactionService:
@@ -56,3 +62,13 @@ class TransactionService:
         await self.youkassa_client.withdraw(data)
         user_balance.balance = encrypt_data(str(Decimal(balance) - data.amount))
         await self.user_balance_repository.update_object(user_balance)
+
+    async def get_transactions(self, user_id: UUID, filters: TransactionFilters) -> tuple[list[TransactionSchema], int]:
+        clean_filters = filters.model_dump(mode='python', exclude_none=True)
+        transactions, count = await self.transaction_repository.get_paginated_transactions(
+            **clean_filters, user_id=user_id
+        )
+        result = []
+        for item in transactions:
+            result.append(TransactionSchema.model_validate(item))
+        return result, count
