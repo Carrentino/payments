@@ -27,6 +27,7 @@ fastapi-storages = "^0.3.0"
 yookassa = "^3.5.0"
 crypto = "^1.4.1"
 pycryptodome = "^3.21.0"
+celery = "^5.4.0"
 
 
 [tool.poetry.group.dev.dependencies]

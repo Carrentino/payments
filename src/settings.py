@@ -19,6 +19,34 @@ class YouKassaSettings(BaseSettings):
     )
 
 
+class KafkaSettings(BaseSettings):
+    users_url: str
+    topic_user_payment: str
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        str_strip_whitespace=True,
+        validate_default=True,
+        case_sensitive=False,
+        extra='ignore',
+        env_prefix="kafka_",
+    )
+
+
+class RedisSettings(BaseSettings):
+    url: str
+    celery_db: int
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        str_strip_whitespace=True,
+        validate_default=True,
+        case_sensitive=False,
+        extra='ignore',
+        env_prefix="redis_",
+    )
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file='.env',
@@ -54,6 +82,8 @@ class Settings(BaseSettings):
     crypto_key: bytes = Field(
         default=b'\x17]~X#\r\xbb\xf3X\x88\x92}\x9aj\xa4\xcd\xe3\xdfZ\xe7\xdaF\xca\xbe\xfb\x9d\x9c\x08\x9eY2\xa6'
     )
+    redis: RedisSettings = RedisSettings()
+    kafka: KafkaSettings = KafkaSettings()
 
 
 @lru_cache
