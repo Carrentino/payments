@@ -20,6 +20,7 @@ class YouKassaSettings(BaseSettings):
 
 
 class KafkaSettings(BaseSettings):
+    users_url: str
     bootstrap_servers: str = Field(default='localhost:9092')
     group_id: str = Field(default='payments-group')
     topic_user_balance: str = Field(default='users_balance')
@@ -31,12 +32,22 @@ class KafkaSettings(BaseSettings):
         validate_default=True,
         case_sensitive=False,
         extra='ignore',
-        env_prefix='kafka_',
+        env_prefix="kafka_",
     )
 
-    @property
-    def topics(self) -> list[str]:
-        return [v for k, v in self.__dict__.items() if k.startswith('topic_')]
+
+class RedisSettings(BaseSettings):
+    url: str
+    celery_db: int
+    model_config = SettingsConfigDict(
+        env_file='.env',
+        env_file_encoding='utf-8',
+        str_strip_whitespace=True,
+        validate_default=True,
+        case_sensitive=False,
+        extra='ignore',
+        env_prefix="redis_",
+    )
 
 
 class Settings(BaseSettings):
@@ -75,6 +86,7 @@ class Settings(BaseSettings):
     crypto_key: bytes = Field(
         default=b'\x17]~X#\r\xbb\xf3X\x88\x92}\x9aj\xa4\xcd\xe3\xdfZ\xe7\xdaF\xca\xbe\xfb\x9d\x9c\x08\x9eY2\xa6'
     )
+    redis: RedisSettings = RedisSettings()
 
 
 @lru_cache
