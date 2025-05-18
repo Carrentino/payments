@@ -40,3 +40,17 @@ class TransactionSchema(BaseModel):
 
 class TransactionPaginatedResponse(PaginatedResponse):
     data: list[TransactionSchema]
+
+
+class ReserveReq(BaseModel):
+    user_from: UUID
+    user_to: UUID
+    amount: Decimal
+
+
+class ReserveResponse(BaseModel):
+    id: UUID
+
+
+class SubmitTransactionReq(BaseModel):
+    transaction_id: UUID

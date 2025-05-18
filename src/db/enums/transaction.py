@@ -4,6 +4,7 @@ from enum import StrEnum
 class TransactionType(StrEnum):
     WITHDRAW = 'Вывод'
     DEPOSIT = 'Пополнение'
+    TRANSFER = 'Перевод'
 
 
 class TransactionStatus(StrEnum):
@@ -11,3 +12,4 @@ class TransactionStatus(StrEnum):
     SUCCESS = 'Успешно'
     CANCELLED = 'Отменен'
     ERROR = 'Ошибка'
+    RESERVED = 'Зарезервировано'

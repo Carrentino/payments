@@ -1,15 +1,13 @@
 """empty message
 
 Revision ID: 38309123ccfc
-Revises: 
+Revises:
 Create Date: 2025-03-12 01:19:38.000972
 
 """
 
-from alembic import op
 import sqlalchemy as sa
-from fastapi_storages.integrations.sqlalchemy import ImageType
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = '38309123ccfc'
@@ -24,9 +22,13 @@ def upgrade() -> None:
         'transactions',
         sa.Column('user_id', sa.Uuid(), nullable=False),
         sa.Column('amount', sa.Numeric(), nullable=False),
-        sa.Column('transaction_type', sa.Enum('WITHDRAW', 'DEPOSIT', name='transactiontype'), nullable=False),
         sa.Column(
-            'status', sa.Enum('PENDING', 'SUCCESS', 'CANCELLED', 'ERROR', name='transactionstatus'), nullable=False
+            'transaction_type', sa.Enum('WITHDRAW', 'DEPOSIT', 'TRANSFER', name='transactiontype'), nullable=False
+        ),
+        sa.Column(
+            'status',
+            sa.Enum('PENDING', 'SUCCESS', 'CANCELLED', 'ERROR', 'RESERVED', name='transactionstatus'),
+            nullable=False,
         ),
         sa.Column('payment_redirect', sa.String(), nullable=False),
         sa.Column('confirmation_url', sa.String(), nullable=False),

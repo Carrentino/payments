@@ -1,4 +1,4 @@
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from helpers.clients.http_client import BaseApiClient
 from helpers.errors.api import ValidationError
@@ -13,6 +13,7 @@ from src.integrations.schemas.youkassa import (
     PayoutSchema,
     PayoutDestinationDataSchema,
     CardSchema,
+    PayMeta,
 )
 from src.settings import get_settings
 from src.web.api.transactions.schemas import DepositOrWithdrawReq
@@ -26,20 +27,21 @@ class YouKassaClient(BaseApiClient):
         Configuration.secret_key = get_settings().youkassa.api_key.get_secret_value()
         super().__init__()
 
-    async def deposit(self, data: DepositOrWithdrawReq) -> str:
+    async def deposit(self, data: DepositOrWithdrawReq, tr_id: UUID) -> str:
         idempotence_key = str(uuid4())
         payment = CreatePaymentSchema(
             amount=Amount(value=data.amount),
             payment_method_data=PaymentMethodData(type='bank_card'),
             confirmation=Confirmation(return_url=data.payment_redirect),
             description=data.description,
+            metadata=PayMeta(transaction_id=tr_id),
         )
         created_payment = Payment.create(payment.model_dump(mode='python'), idempotence_key)
 
         confirmation_url = created_payment.confirmation.confirmation_url
         return confirmation_url
 
-    async def withdraw(self, data: DepositOrWithdrawReq) -> None:
+    async def withdraw(self, data: DepositOrWithdrawReq, tr_id: UUID) -> None:
         idempotence_key = str(uuid4())
         payout = PayoutSchema(
             amount=Amount(value=data.amount),
@@ -49,6 +51,7 @@ class YouKassaClient(BaseApiClient):
                 )
             ),
             description=data.description,
+            metadata=PayMeta(transaction_id=tr_id),
         )
         try:
             Payout.create(payout.model_dump(mode='python'), idempotence_key)
