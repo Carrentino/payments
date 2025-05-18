@@ -1,4 +1,5 @@
 from decimal import Decimal
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -19,11 +20,16 @@ class Confirmation(BaseModel):
     return_url: str = get_settings().payment_redirect
 
 
+class PayMeta(BaseModel):
+    transaction_id: UUID
+
+
 class CreatePaymentSchema(BaseModel):
     amount: Amount
     payment_method_data: PaymentMethodData
     confirmation: Confirmation
     description: str | None = None
+    metadata: PayMeta
 
 
 class CardSchema(BaseModel):
@@ -39,3 +45,4 @@ class PayoutSchema(BaseModel):
     amount: Amount
     payout_destination_data: PayoutDestinationDataSchema
     description: str
+    metadata: PayMeta

@@ -1,6 +1,12 @@
+from decimal import Decimal
+from uuid import UUID
+
 from pydantic import BaseModel
 
-from src.services.schemas.user_balance import UpdateBalance
+
+class UpdateBalance(BaseModel):
+    user_id: UUID
+    balance: Decimal
 
 
 class UpdateBalanceMessage(BaseModel):

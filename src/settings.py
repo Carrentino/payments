@@ -21,7 +21,10 @@ class YouKassaSettings(BaseSettings):
 
 class KafkaSettings(BaseSettings):
     users_url: str
-    topic_user_payment: str
+    bootstrap_servers: str = Field(default='localhost:9092')
+    group_id: str = Field(default='payments-group')
+    topic_user_balance: str = Field(default='users_balance')
+
     model_config = SettingsConfigDict(
         env_file='.env',
         env_file_encoding='utf-8',
@@ -75,6 +78,7 @@ class Settings(BaseSettings):
         default='postgresql+asyncpg://postgres:@localhost:5432/base_test'
     )
     youkassa: YouKassaSettings = YouKassaSettings()
+    kafka: KafkaSettings = KafkaSettings()
 
     trace_id_header: str = 'X-Trace-Id'
     jwt_key: SecretStr = Field(default=SecretStr('551b8ef09b5e43ddcc45461f854a89b83b9277c6e578f750bf5a6bc3f06d8c08'))
@@ -83,7 +87,6 @@ class Settings(BaseSettings):
         default=b'\x17]~X#\r\xbb\xf3X\x88\x92}\x9aj\xa4\xcd\xe3\xdfZ\xe7\xdaF\xca\xbe\xfb\x9d\x9c\x08\x9eY2\xa6'
     )
     redis: RedisSettings = RedisSettings()
-    kafka: KafkaSettings = KafkaSettings()
 
 
 @lru_cache
